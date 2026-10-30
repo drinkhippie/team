@@ -3,7 +3,7 @@ import os,glob
 # usage: build_page.py <page.html> <data_dir with <dataset_id>.json> <asof YYYY-MM-DD> <out.html>
 PAGE,DATA,ASOF,OUT=sys.argv[1:5]
 data={os.path.basename(f)[:-5]:json.load(open(f)) for f in glob.glob(os.path.join(DATA,'*.json'))}
-page=open(PAGE).read().replace('<p class="he-note" id="asof">Updated daily from Zoho CRM and Zoho Books. Hippie Energy only.</p>','<p class="he-note" id="asof">Updated every morning from Zoho CRM, Zoho Books and Shopline. Hippie Energy only.</p>')
+page=open(PAGE).read().replace('<p class="he-note" id="asof">Updated daily from Zoho CRM and Zoho Books. Hippie Energy only.</p>','<p class="he-note" id="asof">Updated every morning from Zoho CRM, Zoho Books and Shopline. Hippie Energy, plus Hippie Brew in the revenue totals.</p>')
 d3js=open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'vendor','d3.min.js')).read()
 asof=ASOF
 css='''<style>
@@ -33,7 +33,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 });
 })();
 </script>'''%json.dumps(data,separators=(',',':'))
-note='<p class="export-note">Data as of %s · Hippie Energy · Prepared from Zoho CRM, Zoho Books and Shopline data. Hover any chart for details.</p>'%datetime.date.fromisoformat(asof).strftime('%B %-d, %Y')
+note='<p class="export-note">Data as of %s · Prepared from Zoho CRM, Zoho Books and Shopline data. Hover any chart for details.</p>'%datetime.date.fromisoformat(asof).strftime('%B %-d, %Y')
 html='<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hippie Energy Sales</title>'+css+'<script>'+d3js+'</script>'+shim+'</head><body><div id="dash-root">'+note+page+'</div></body></html>'
 out=OUT
 open(out,'w').write(html); print(out,len(html))
